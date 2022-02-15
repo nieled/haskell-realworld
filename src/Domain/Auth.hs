@@ -4,7 +4,7 @@ module Domain.Auth where
 
 import           Data.Text         ( Text )
 import           Domain.Validation ( lengthBetween, regexMatches, validate )
-import           Text.RawString.QQ
+import           Text.RawString.QQ ( r )
 
 newtype Email
   = Email { emailRaw :: Text }
@@ -26,8 +26,8 @@ newtype Password
 
 mkPassword :: Text -> Either [Text] Password
 mkPassword pass = validate Password
-  [ --lengthBetween 5 50 "Should be between 5 and 50"
-  regexMatches [r|\d|] "Should contain a number"
+  [ lengthBetween 5 50 "Should be between 5 and 50"
+  , regexMatches [r|\d|] "Should contain a number"
   , regexMatches [r|[A-Z]|] "Should contain a uppercase letter"
   , regexMatches [r|[a-z]|] "Should contain a lowercase letter"
   ]
@@ -43,4 +43,3 @@ data Auth
       , authPassword :: Password
       }
   deriving (Eq, Show)
-
