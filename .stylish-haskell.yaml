@@ -216,7 +216,7 @@ steps:
       #   >     )
       #
       # Default: inline
-      long_list_align: inline
+      long_list_align: new_line_multiline 
 
       # Align empty list (importing instances)
       #
@@ -273,7 +273,7 @@ steps:
       #   > import Data.Foo (foo)
       #
       # Default: false
-      space_surround: false
+      space_surround: true
 
       # Post qualify option moves any qualifies found in import declarations
       # to the end of the declaration. This also adjust padding for any
@@ -369,9 +369,10 @@ newline: native
 # needs to be aware of these, so it can parse the file correctly.
 #
 # No language extensions are enabled by default.
-# language_extensions:
-  # - TemplateHaskell
-  # - QuasiQuotes
+language_extensions:
+  - OverloadedStrings
+  - TemplateHaskell
+  - QuasiQuotes
 
 # Attempt to find the cabal file in ancestors of the current directory, and
 # parse options (currently only language extensions) from that.

@@ -25,6 +25,7 @@ dependencies:
 - aeson
 - regex-tdfa
 - template-haskell
+- text
 - time
 - time-lens
 

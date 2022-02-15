@@ -1,5 +1,7 @@
 module Domain.Auth where
 
+import           Data.Text ( Text )
+
 data Auth
   = Auth
       { authEmail    :: Email
@@ -8,8 +10,9 @@ data Auth
   deriving (Eq, Show)
 
 newtype Email
-  = Email { emailRaw :: String } deriving (Eq, Ord, Show)
+  = Email { emailRaw :: Text }
+  deriving (Eq, Ord, Show)
 
 newtype Password
-  = Password { passwordRaw :: String }
-    deriving (Eq, Show)
+  = Password { passwordRaw :: Text }
+  deriving (Eq, Show)
