@@ -21,13 +21,17 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-- classy-prelude
+
+- aeson
+- regex-tdfa
+- template-haskell
 - time
 - time-lens
 
 default-extensions:
-- NoImplicitPrelude
 - OverloadedStrings
+- QuasiQuotes
+- TemplateHaskell
 
 library:
   source-dirs: src
