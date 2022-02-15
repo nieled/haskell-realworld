@@ -1,0 +1,13 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "haskell-realworld:lib"
+
+    - path: "./app/Main.hs"
+      component: "haskell-realworld:exe:haskell-realworld-exe"
+
+    - path: "./app/Paths_haskell_realworld.hs"
+      component: "haskell-realworld:exe:haskell-realworld-exe"
+
+    - path: "./test"
+      component: "haskell-realworld:test:haskell-realworld-test"
