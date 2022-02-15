@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Domain.Auth
+      Domain.Validation
       Lib
   other-modules:
       Paths_haskell_realworld
@@ -38,6 +39,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , raw-strings-qq
     , regex-tdfa
     , template-haskell
     , text
@@ -60,6 +62,7 @@ executable haskell-realworld-exe
       aeson
     , base >=4.7 && <5
     , haskell-realworld
+    , raw-strings-qq
     , regex-tdfa
     , template-haskell
     , text
@@ -83,6 +86,7 @@ test-suite haskell-realworld-test
       aeson
     , base >=4.7 && <5
     , haskell-realworld
+    , raw-strings-qq
     , regex-tdfa
     , template-haskell
     , text
