@@ -24,6 +24,7 @@ dependencies:
 
 - aeson
 - mono-traversable
+- mtl
 - raw-strings-qq
 - regex-tdfa
 - template-haskell

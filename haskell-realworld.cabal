@@ -40,6 +40,7 @@ library
       aeson
     , base >=4.7 && <5
     , mono-traversable
+    , mtl
     , raw-strings-qq
     , regex-tdfa
     , template-haskell
@@ -64,6 +65,7 @@ executable haskell-realworld-exe
     , base >=4.7 && <5
     , haskell-realworld
     , mono-traversable
+    , mtl
     , raw-strings-qq
     , regex-tdfa
     , template-haskell
@@ -89,6 +91,7 @@ test-suite haskell-realworld-test
     , base >=4.7 && <5
     , haskell-realworld
     , mono-traversable
+    , mtl
     , raw-strings-qq
     , regex-tdfa
     , template-haskell
