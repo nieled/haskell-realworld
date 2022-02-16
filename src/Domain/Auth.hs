@@ -48,8 +48,9 @@ data RegistrationError
   = RegistrationErrorEmailToken
   deriving (Eq, Show)
 
-data EmailValidationErr
-  = EmailValidationErrInvalidEmail
+data EmailVerificationError
+  = EmailVerificationErrorInvalidCode
+  deriving (Show, Eq)
 data PasswordValidationErr
   = PasswordValidationErrLength Int
   | PasswordValidationErrMustContainUpperCase
@@ -61,6 +62,7 @@ type VerificationCode = Text
 
 class Monad m => AuthRepo m where
   addAuth :: Auth -> m (Either RegistrationError VerificationCode)
+  setEmailAsVerified :: VerificationCode -> m (Either EmailVerificationError ())
 
 class Monad m => EmailVerificationNotif m where
   notifyEmailVerification :: Email -> VerificationCode -> m ()
@@ -71,6 +73,9 @@ register auth = runExceptT $ do
   vCode <- ExceptT $ addAuth auth
   let email = authEmail auth
   lift $ notifyEmailVerification email vCode
+
+verifyEmail :: AuthRepo m => VerificationCode -> m (Either EmailVerificationError ())
+verifyEmail = setEmailAsVerified
 
 instance AuthRepo IO where
   addAuth (Auth email pass) = do
