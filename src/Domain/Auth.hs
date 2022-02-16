@@ -70,7 +70,6 @@ data Auth
       }
   deriving (Eq, Show)
 
-
 data EmailVerificationError
   = EmailVerificationErrorInvalidCode
   deriving (Eq, Show)
@@ -85,7 +84,7 @@ data PasswordValidationErr
   | PasswordValidationErrMustContainNumber
   deriving (Eq, Show)
 data RegistrationError
-  = RegistrationErrorEmailToken
+  = RegistrationErrorEmailTaken
   deriving (Eq, Show)
 
 type VerificationCode = Text
@@ -125,15 +124,5 @@ register auth = runExceptT $ do
   let email = authEmail auth
   lift $ notifyEmailVerification email vCode
 
-verifyEmail :: AuthRepo m
-            => VerificationCode -> m (Either EmailVerificationError ())
+verifyEmail :: AuthRepo m => VerificationCode -> m (Either EmailVerificationError ())
 verifyEmail = setEmailAsVerified
-
--- instance AuthRepo IO where
---   addAuth (Auth email pass) = do
---     putStrLn . unpack $ "adding auth: " <> rawEmail email
---     return $ Right "fake verification code"
-
--- instance EmailVerificationNotif IO where
---   notifyEmailVerification email vCode =
---     putStrLn . unpack $ "Notify " <> rawEmail email <> " - " <> vCode
