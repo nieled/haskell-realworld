@@ -2,7 +2,8 @@
 {-# LANGUAGE QuasiQuotes    #-}
 module Domain.Auth where
 
-import           Control.Monad.Except ( ExceptT (ExceptT), lift, runExceptT )
+import           Control.Monad.Except
+    ( ExceptT (ExceptT), MonadError (throwError), lift, runExceptT )
 import           Data.Text            ( Text, unpack )
 import           Domain.Validation    ( lengthBetween, regexMatches, validate )
 import           Text.RawString.QQ    ( r )
@@ -44,44 +45,66 @@ data Auth
       }
   deriving (Eq, Show)
 
-data RegistrationError
-  = RegistrationErrorEmailToken
-  deriving (Eq, Show)
 
 data EmailVerificationError
   = EmailVerificationErrorInvalidCode
-  deriving (Show, Eq)
+  deriving (Eq, Show)
+data LoginError
+  = LoginErrorInvalidAuth
+  | LoginErrorEmailNotVerified
+  deriving (Eq, Show)
 data PasswordValidationErr
   = PasswordValidationErrLength Int
   | PasswordValidationErrMustContainUpperCase
   | PasswordValidationErrMustContainLowerCase
   | PasswordValidationErrMustContainNumber
-
+  deriving (Eq, Show)
+data RegistrationError
+  = RegistrationErrorEmailToken
+  deriving (Eq, Show)
 
 type VerificationCode = Text
+type UserId = Int
+type SessionId = Text
 
 class Monad m => AuthRepo m where
   addAuth :: Auth -> m (Either RegistrationError VerificationCode)
   setEmailAsVerified :: VerificationCode -> m (Either EmailVerificationError ())
+  findUserByAuth :: Auth -> m (Maybe (UserId, Bool))
 
 class Monad m => EmailVerificationNotif m where
   notifyEmailVerification :: Email -> VerificationCode -> m ()
 
-register :: (AuthRepo m, EmailVerificationNotif m)
-         => Auth -> m (Either RegistrationError ())
+class Monad m => SessionRepo m where
+  newSession :: UserId -> m SessionId
+  findUserIdBySessionId :: SessionId -> m (Maybe UserId)
+
+resolveSessionId :: SessionRepo m => SessionId -> m (Maybe UserId)
+resolveSessionId = findUserIdBySessionId
+
+login :: (AuthRepo m, SessionRepo m) => Auth -> m (Either LoginError SessionId)
+login auth = runExceptT $ do
+  result <- lift $ findUserByAuth auth
+  case result of
+    Nothing         -> throwError LoginErrorInvalidAuth
+    Just (_, False) -> throwError LoginErrorEmailNotVerified
+    Just (uId, _)   -> lift $ newSession uId
+
+register :: (AuthRepo m, EmailVerificationNotif m) => Auth -> m (Either RegistrationError ())
 register auth = runExceptT $ do
   vCode <- ExceptT $ addAuth auth
   let email = authEmail auth
   lift $ notifyEmailVerification email vCode
 
-verifyEmail :: AuthRepo m => VerificationCode -> m (Either EmailVerificationError ())
+verifyEmail :: AuthRepo m
+            => VerificationCode -> m (Either EmailVerificationError ())
 verifyEmail = setEmailAsVerified
 
-instance AuthRepo IO where
-  addAuth (Auth email pass) = do
-    putStrLn . unpack $ "adding auth: " <> rawEmail email
-    return $ Right "fake verification code"
+-- instance AuthRepo IO where
+--   addAuth (Auth email pass) = do
+--     putStrLn . unpack $ "adding auth: " <> rawEmail email
+--     return $ Right "fake verification code"
 
-instance EmailVerificationNotif IO where
-  notifyEmailVerification email vCode =
-    putStrLn . unpack $ "Notify " <> rawEmail email <> " - " <> vCode
+-- instance EmailVerificationNotif IO where
+--   notifyEmailVerification email vCode =
+--     putStrLn . unpack $ "Notify " <> rawEmail email <> " - " <> vCode
