@@ -1,9 +1,9 @@
 module Domain.Validation where
 
-import           Data.Maybe           ( maybeToList )
-import           Data.MonoTraversable ( MonoFoldable (olength) )
-import           Data.Text            ( Text )
-import           Text.Regex.TDFA      ( (=~) )
+import           Data.Maybe                     ( maybeToList )
+import           Data.MonoTraversable           ( MonoFoldable(olength) )
+import           Data.Text                      ( Text )
+import           Text.Regex.TDFA                ( (=~) )
 
 type Validation e a = a -> Maybe e
 
@@ -22,5 +22,4 @@ rangeBetween minRange maxRange errMsg val =
   if val >= minRange && val <= maxRange then Nothing else Just errMsg
 
 regexMatches :: Text -> e -> Validation e Text
-regexMatches regex errMsg val =
-  if val =~ regex then Nothing else Just errMsg
+regexMatches regex errMsg val = if val =~ regex then Nothing else Just errMsg
