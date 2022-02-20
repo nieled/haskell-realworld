@@ -1,8 +1,15 @@
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Adapter.InMemory.Auth where
 
+import           Control.Concurrent.STM         ( TVar )
+import           Control.Monad.List
+import           Control.Monad.Reader           ( MonadReader )
+import           Data.Has                       ( Has )
 import           Data.Map                       ( Map )
 import           Data.Set                       ( Set )
 import qualified Domain.Auth                   as D
+import           Domain.Auth                    ( AuthRepo(addAuth) )
 
 data State = State
   { stateAuths              :: [(D.UserId, D.Auth)]
@@ -23,3 +30,30 @@ initialState = State { stateAuths              = []
                      , stateSessions           = mempty
                      }
 
+type InMemory r m = (Has (TVar State) r, MonadReader r m, MonadIO m)
+
+addAuth
+  :: InMemory r m => D.Auth -> m (Either D.RegistrationError D.VerificationCode)
+addAuth = undefined
+
+setEmailAsVerified
+  :: InMemory r m
+  => D.VerificationCode
+  -> m (Either D.EmailVerificationError ())
+setEmailAsVerified = undefined
+
+findUserByAuth :: InMemory r m => D.Auth -> m (Maybe (D.UserId, Bool))
+findUserByAuth = undefined
+
+findEmailFromUserId :: InMemory r m => D.UserId -> m (Maybe D.Email)
+findEmailFromUserId = undefined
+
+notifyEmailVerification
+  :: InMemory r m => D.Email -> D.VerificationCode -> m ()
+notifyEmailVerification = undefined
+
+newSession :: InMemory r m => D.UserId -> m D.SessionId
+newSession = undefined
+
+findUserIdBySessionId :: InMemory r m => D.SessionId -> m (Maybe D.UserId)
+findUserIdBySessionId = undefined

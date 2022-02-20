@@ -41,6 +41,7 @@ library
       aeson
     , base >=4.7 && <5
     , containers
+    , data-has
     , mono-traversable
     , mtl
     , raw-strings-qq
@@ -67,6 +68,7 @@ executable haskell-realworld-exe
       aeson
     , base >=4.7 && <5
     , containers
+    , data-has
     , haskell-realworld
     , mono-traversable
     , mtl
@@ -95,6 +97,7 @@ test-suite haskell-realworld-test
       aeson
     , base >=4.7 && <5
     , containers
+    , data-has
     , haskell-realworld
     , mono-traversable
     , mtl

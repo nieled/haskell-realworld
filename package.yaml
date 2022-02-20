@@ -24,6 +24,7 @@ dependencies:
 
 - aeson
 - containers
+- data-has
 - mono-traversable
 - mtl
 - raw-strings-qq
