@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Adapter.InMemory.Auth
       Domain.Auth
       Domain.Validation
       Lib
@@ -39,10 +40,12 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , mono-traversable
     , mtl
     , raw-strings-qq
     , regex-tdfa
+    , stm
     , template-haskell
     , text
     , time
@@ -63,11 +66,13 @@ executable haskell-realworld-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , haskell-realworld
     , mono-traversable
     , mtl
     , raw-strings-qq
     , regex-tdfa
+    , stm
     , template-haskell
     , text
     , time
@@ -89,11 +94,13 @@ test-suite haskell-realworld-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , haskell-realworld
     , mono-traversable
     , mtl
     , raw-strings-qq
     , regex-tdfa
+    , stm
     , template-haskell
     , text
     , time

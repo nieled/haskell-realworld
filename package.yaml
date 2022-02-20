@@ -23,10 +23,12 @@ dependencies:
 - base >= 4.7 && < 5
 
 - aeson
+- containers
 - mono-traversable
 - mtl
 - raw-strings-qq
 - regex-tdfa
+- stm
 - template-haskell
 - text
 - time

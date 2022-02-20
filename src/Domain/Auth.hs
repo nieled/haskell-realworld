@@ -46,7 +46,7 @@ import           Text.RawString.QQ              ( r )
 
 newtype Email
   = Email { emailRaw :: Text }
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Show, Ord)
 
 mkEmail :: Text -> Either [Text] Email
 mkEmail = validate
