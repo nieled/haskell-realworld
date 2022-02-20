@@ -30,6 +30,7 @@ dependencies:
 - raw-strings-qq
 - regex-tdfa
 - stm
+- string-random
 - template-haskell
 - text
 - time

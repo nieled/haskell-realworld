@@ -47,6 +47,7 @@ library
     , raw-strings-qq
     , regex-tdfa
     , stm
+    , string-random
     , template-haskell
     , text
     , time
@@ -75,6 +76,7 @@ executable haskell-realworld-exe
     , raw-strings-qq
     , regex-tdfa
     , stm
+    , string-random
     , template-haskell
     , text
     , time
@@ -104,6 +106,7 @@ test-suite haskell-realworld-test
     , raw-strings-qq
     , regex-tdfa
     , stm
+    , string-random
     , template-haskell
     , text
     , time

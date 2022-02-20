@@ -2,22 +2,32 @@
 {-# LANGUAGE FlexibleContexts #-}
 module Adapter.InMemory.Auth where
 
-import           Control.Concurrent.STM         ( TVar )
+import           Control.Concurrent.STM         ( TVar
+                                                , atomically
+                                                , readTVar
+                                                , readTVarIO
+                                                , writeTVar
+                                                )
 import           Control.Monad.List
 import           Control.Monad.Reader           ( MonadReader )
-import           Data.Has                       ( Has )
-import           Data.Map                       ( Map )
-import           Data.Set                       ( Set )
+import           Control.Monad.Reader.Class     ( asks )
+import           Data.Has
+import qualified Data.Map                      as M
+import qualified Data.Set                      as S
+import           Data.Text                      ( Text
+                                                , pack
+                                                )
 import qualified Domain.Auth                   as D
 import           Domain.Auth                    ( AuthRepo(addAuth) )
+import           Text.StringRandom              ( stringRandomIO )
 
 data State = State
   { stateAuths              :: [(D.UserId, D.Auth)]
-  , stateUniversifiedEmails :: Map D.VerificationCode D.Email
-  , stateVerifiedEmails     :: Set D.Email
+  , stateUniversifiedEmails :: M.Map D.VerificationCode D.Email
+  , stateVerifiedEmails     :: S.Set D.Email
   , stateUserIdCouter       :: Int
-  , stateNotifications      :: Map D.Email D.VerificationCode
-  , stateSessions           :: Map D.SessionId D.UserId
+  , stateNotifications      :: M.Map D.Email D.VerificationCode
+  , stateSessions           :: M.Map D.SessionId D.UserId
   }
   deriving (Show, Eq)
 
@@ -53,7 +63,21 @@ notifyEmailVerification
 notifyEmailVerification = undefined
 
 newSession :: InMemory r m => D.UserId -> m D.SessionId
-newSession = undefined
+newSession uId = do
+  tvar <- asks getter
+  sId <- liftIO $ ((pack . show $ uId) <>) <$> stringRandomIO "[A-Z-a-z0-9]{16}"
+  atomically $ do
+    state <- readTVar tvar
+    let sessions    = stateSessions state
+        newSessions = M.insert sId uId sessions
+        newState    = state { stateSessions = newSessions }
+    writeTVar tvar newState
+    return sId
+
+
+
 
 findUserIdBySessionId :: InMemory r m => D.SessionId -> m (Maybe D.UserId)
-findUserIdBySessionId = undefined
+findUserIdBySessionId sId = do
+  tvar <- asks getter
+  liftIO $ M.lookup sId . stateSessions <$> readTVarIO tvar
